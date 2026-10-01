@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<!--
+=====================================================================================
+  LINA ORUNDAS — PORTFOLIO  ·  EASY EDIT GUIDE
+=====================================================================================
+  Everything you may want to change is marked with  ✏️ EDIT  in a comment.
+  Tip: press Ctrl+F (Cmd+F on Mac) and search "✏️" to jump between every spot.
+
+  WHERE TO CHANGE WHAT
+  ---------------------------------------------------------------------------------
+  Colors                 -> CSS, very top, the ":root" block (--pink-rose, --pink-soft ...)
+  Loading screen name    -> SCRIPT section 0, the line   const NAME_ROWS = [...]
+  Loading screen length  -> SCRIPT section 0, the "TIMELINE" numbers (milliseconds)
+  Hero text              -> HTML section "1. HERO"
+  About texts + photos   -> HTML section "2. ABOUT"
+  Table of contents disc -> HTML section "3. TABLE OF CONTENTS"
+  Work texts             -> HTML section "4. SELECTED WORK" (3 blocks: Creative, Marketing, UX/UI)
+  Polaroid photos        -> block 4A, each <figure class="polaroid">  (image path + title + note)
+  Marketing photos       -> block 4B, each <figure class="ed-img"> and each text block
+  UX cards (cover+link)  -> block 4C, each <a class="ux-card">  (href = your link, img = cover)
+  Portal Press link      -> block 4A, the button "Read Portal Press"
+  Contact email          -> HTML section "5. CONTACT" AND script section 6 (same email in 2 places)
+  Social links           -> HTML section "5. CONTACT" (LinkedIn button + "Also find me" row)
+
+  IMAGES: put your pictures in a folder called  images/  next to this file.
+  If a picture is missing the site shows a soft pink placeholder with the file name,
+  so you always know what to name it.
+=====================================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lina Orundas — Creative Direction &amp; Editorial Archive</title>
+<meta name="description" content="Lina Orundas — Multidisciplinary Art Director and Designer based in Sweden. Editorial systems, music curation & DJing, social media direction, and UX/UI design.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,400;1,6..96,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Italiana&family=Pinyon+Script&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<noscript><style>.hero-fade{opacity:1!important}#loader{display:none}</style></noscript>
+
+<style>
+/* =====================================================================
+   1. DESIGN TOKENS  ✏️ EDIT colors / fonts here
+   ===================================================================== */
+:root{
+  --bg:#FFFFFF; --bg-soft:#FAFAF8; --bg-cream:#F5F4F0;
+  --fg:#111111; --fg-muted:#4A4A4A; --fg-subtle:#8A8A8A;
+  --pink-soft:#FFAFD5;            /* light bubblegum pink  */
+  --pink-rose:#D4669A;            /* main accent pink      */
+  --pink-glow:rgba(212,102,154,.35);
+  --pink-light:#FFF0F6;           /* very pale pink        */
+  --hairline:rgba(17,17,17,.08); --hairline-dark:rgba(17,17,17,.16);
+  --shadow-art:0 20px 50px -10px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+  --shadow-hover:0 28px 65px -12px rgba(212,102,154,.22),0 4px 12px rgba(0,0,0,.04);
+  --shadow-turntable:0 35px 80px -15px rgba(0,0,0,.12),0 0 0 1px rgba(0,0,0,.05);
+  --font-display:'Bodoni Moda','Italiana',Georgia,serif;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Plus Jakarta Sans',-apple-system,'Helvetica Neue',sans-serif;
+  --font-cursive:'Pinyon Script',cursive;
+  --maxw:1240px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-sans);line-height:1.7;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:var(--pink-soft);color:#000}
+a{color:inherit;text-decoration:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
+button{font:inherit;cursor:pointer;border:none;background:none}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 48px}
+.cursive-glow{font-family:var(--font-cursive);color:var(--pink-rose);text-shadow:0 4px 22px var(--pink-glow),0 1px 2px rgba(212,102,154,.2);font-style:normal;text-transform:none!important;display:inline-block}
+
+/* scroll-in animation (adds class "revealed" when visible) */
+.reveal-on-scroll{opacity:0;transform:translateY(30px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal-on-scroll.revealed{opacity:1;transform:none}
+
+/* image placeholder: shows the file name if the picture is missing */
+.ph{position:relative;background:linear-gradient(160deg,var(--pink-light),var(--bg-cream));overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ph::after{content:attr(data-ph);font-family:monospace;font-size:11px;color:var(--pink-rose);padding:10px;text-align:center}
+.ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+
+/* =====================================================================
+   2. LOADING SCREEN (small square board)
+   ===================================================================== */
+#loader{--ts:clamp(26px,5.2vw,34px);--gap:5px;position:fixed;inset:0;z-index:1000;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:opacity .8s ease,visibility .8s}
+#loader.done{opacity:0;visibility:hidden}
+.ld-aura{position:absolute;width:70vmin;height:70vmin;border-radius:50%;background:radial-gradient(circle,rgba(255,175,213,.75),rgba(232,165,255,.25) 50%,transparent 70%);filter:blur(40px);animation:auraBreath 3.2s ease-in-out infinite;transition:transform 1s ease,opacity 1s ease}
+@keyframes auraBreath{0%,100%{transform:scale(.9);opacity:.8}50%{transform:scale(1.1);opacity:1}}
+.ld-card{position:relative;width:calc(var(--ts)*7 + var(--gap)*6);aspect-ratio:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--gap);transition:transform .9s cubic-bezier(.16,1,.3,1),opacity .8s ease}
+.ld-row{display:flex;justify-content:center;gap:var(--gap);height:var(--ts);transition:height .6s ease,opacity .5s ease,margin .6s ease}
+.ld-row.gone{height:0;opacity:0;margin-top:calc(var(--gap)*-1)}
+.ld-tile{width:var(--ts);height:var(--ts);border:1.5px solid var(--hairline-dark);border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:calc(var(--ts)*.62);font-weight:500;transition:width .6s ease,opacity .5s ease,margin .6s ease,background .3s,border-color .3s}
+.ld-tile.gone{width:0;opacity:0;border-width:0;margin-left:calc(var(--gap)*-1)}
+.ld-tile.flip{animation:tileFlip .55s ease}
+@keyframes tileFlip{50%{transform:rotateX(90deg)}}
+/* "searching" colors (no letters yet) */
+.ld-tile.s1{background:var(--pink-soft);border-color:var(--pink-soft)}
+.ld-tile.s2{background:var(--pink-rose);border-color:var(--pink-rose)}
+.ld-tile.s3{background:#E9E7E2;border-color:#E9E7E2}
+/* final letters: pink for the first row, black for the second */
+.ld-tile.show-pink{color:var(--pink-rose);background:var(--pink-light);border-color:var(--pink-soft)}
+.ld-tile.show-ink{color:var(--fg);background:#fff;border-color:var(--fg)}
+/* outro */
+#loader.outro .ld-card{transform:scale(1.1);opacity:0}
+#loader.outro .ld-aura{transform:scale(3);opacity:0}
+
+/* =====================================================================
+   3. HEADER
+   ===================================================================== */
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:22px 0;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid transparent;transition:all .4s cubic-bezier(.16,1,.3,1)}
+header.scrolled{padding:12px 0;background:rgba(255,255,255,.94);border-bottom:1px solid var(--hairline);box-shadow:0 10px 35px rgba(0,0,0,.03)}
+nav.wrap{display:flex;justify-content:space-between;align-items:center}
+.nav-brand{display:flex;align-items:center;gap:14px}
+.brand-logo-mark{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#181818,#050505);display:flex;align-items:center;justify-content:center;position:relative;transition:all .35s cubic-bezier(.16,1,.3,1);box-shadow:0 4px 16px rgba(0,0,0,.12),inset 0 0 0 1px rgba(255,255,255,.18);flex-shrink:0}
+.brand-logo-mark::before{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px dashed rgba(212,102,154,.45);transition:all .4s;opacity:.7}
+.brand-logo-mark:hover{background:linear-gradient(135deg,#222,#D4669A 120%);transform:scale(1.08) rotate(10deg);box-shadow:0 8px 24px var(--pink-glow)}
+.brand-logo-mark:hover::before{border-color:var(--pink-rose);transform:rotate(-30deg) scale(1.08);opacity:1}
+.brand-svg-crest{width:25px;height:25px}
+.nav-brand-text{display:flex;flex-direction:column;gap:2px}
+.nav-name{font-family:var(--font-display);font-size:17px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;line-height:1.1;transition:color .2s}
+.nav-brand:hover .nav-name{color:var(--pink-rose)}
+.nav-edition{font-size:9px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+.nav-links{display:flex;gap:30px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--fg-muted)}
+.nav-links a{position:relative;padding-bottom:4px}
+.nav-links a:hover{color:var(--fg)}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--pink-rose);transition:width .25s}
+.nav-links a:hover::after{width:100%}
+.nav-status{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-muted);display:flex;align-items:center;gap:8px}
+.nav-dot{width:7px;height:7px;background:#10B981;border-radius:50%;box-shadow:0 0 10px rgba(16,185,129,.6);animation:pulseGreen 2.2s infinite ease-in-out}
+@keyframes pulseGreen{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* =====================================================================
+   4. HERO — big name + floating pink aura
+   ===================================================================== */
+.hero-editorial{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:150px 24px 100px;position:relative;overflow:hidden;background:#fff;border-bottom:1px solid var(--hairline)}
+.hero-aura{position:absolute;inset:0;pointer-events:none}
+.aura{position:absolute;border-radius:50%;filter:blur(80px);will-change:transform}
+.aura.a1{width:min(620px,80vw);height:min(620px,80vw);left:50%;top:34%;margin:-310px 0 0 -310px;background:radial-gradient(circle,rgba(255,175,213,.85),rgba(255,175,213,0) 70%);animation:driftA 14s ease-in-out infinite}
+.aura.a2{width:min(460px,60vw);height:min(460px,60vw);right:-6%;bottom:8%;background:radial-gradient(circle,rgba(232,165,255,.55),rgba(232,165,255,0) 70%);animation:driftB 18s ease-in-out infinite}
+.aura.a3{width:min(420px,55vw);height:min(420px,55vw);left:-8%;bottom:-6%;background:radial-gradient(circle,rgba(212,102,154,.38),rgba(212,102,154,0) 70%);animation:driftC 16s ease-in-out infinite}
+@keyframes driftA{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.12)}}
+@keyframes driftB{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,30px) scale(1.1)}}
+@keyframes driftC{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-40px) scale(1.15)}}
+.hero-inner{position:relative;z-index:2}
+.hero-kicker{display:inline-flex;align-items:center;gap:12px;font-size:10.5px;letter-spacing:.34em;text-transform:uppercase;font-weight:600;color:var(--fg-muted);margin-bottom:30px}
+.hero-kicker::before,.hero-kicker::after{content:'';width:34px;height:1px;background:var(--pink-rose);opacity:.7}
+.hero-name{display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:0 .16em;line-height:.9;margin-bottom:0;font-family:var(--font-display);font-size:clamp(64px,13vw,172px);letter-spacing:-.05em;font-variation-settings:"opsz" 96}
+.hn-first{font-weight:400;color:var(--fg)}
+/* ✏️ NAME STYLE: both words use the same font (Bodoni Moda) so everything lines up. "Lina" = upright, "Orundas" = italic. Bigger/smaller: change font-size on .hero-name. Tighter/looser letters: change letter-spacing on .hero-name (more negative = tighter). */
+.hn-last{font-style:italic;font-weight:400;color:var(--fg)}
+.hero-cursive-title{position:relative;z-index:3;font-family:var(--font-cursive);font-size:clamp(44px,8vw,100px);color:var(--pink-rose);text-shadow:0 8px 34px var(--pink-glow),0 1px 3px rgba(212,102,154,.25);line-height:1;display:block;text-align:center;margin:-.05em auto 34px}
+.hero-statement{font-size:clamp(15px,1.7vw,17.5px);color:var(--fg-muted);max-width:56ch;line-height:1.9;margin:0 auto 40px}
+.hero-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap}
+.btn-minimal-black{background:var(--fg);color:#fff;padding:15px 34px;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;border-radius:100px;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.btn-minimal-black:hover{background:var(--pink-rose);transform:translateY(-3px);box-shadow:0 14px 30px rgba(212,102,154,.35)}
+.btn-minimal-ghost{background:rgba(255,255,255,.8);color:var(--fg);padding:15px 34px;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;border-radius:100px;border:1px solid var(--hairline-dark)}
+.btn-minimal-ghost:hover{border-color:var(--fg);transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.06)}
+.hero-scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--fg-subtle);font-weight:600}
+.hero-scroll-cue:hover{color:var(--pink-rose)}
+.scroll-line-art{width:1px;height:36px;background:linear-gradient(to bottom,var(--pink-rose),transparent);animation:pulseLine 2.2s infinite ease-in-out}
+@keyframes pulseLine{0%,100%{transform:scaleY(.4);transform-origin:top;opacity:.3}50%{transform:scaleY(1);transform-origin:top;opacity:1}}
+/* hero text fades in AFTER the loading screen (JS adds class "loaded" to body) */
+.hero-fade{opacity:0}
+body.loaded .hero-fade{animation:enterFadeUp 1.1s cubic-bezier(.16,1,.3,1) forwards;animation-delay:var(--d,0s)}
+@keyframes enterFadeUp{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:none}}
+
+/* =====================================================================
+   5. SECTION HEADERS
+   ===================================================================== */
+section{padding:120px 0;position:relative}
+.section-header-art{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:22px;border-bottom:1px solid var(--hairline-dark);margin-bottom:60px;flex-wrap:wrap;gap:16px}
+.sec-tag-small{font-size:11px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--pink-rose);margin-bottom:6px;display:block}
+.sec-heading-display{font-family:var(--font-display);font-size:clamp(36px,5.2vw,64px);font-weight:400;line-height:.95;letter-spacing:-.01em;text-transform:uppercase}
+.sec-index-pill{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--fg-muted);padding:5px 14px;border-radius:100px;background:var(--bg-soft);border:1px solid var(--hairline)}
+
+/* =====================================================================
+   6. ABOUT
+   ===================================================================== */
+.about-chapters-list{display:flex;flex-direction:column;gap:70px}
+.about-chapter-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;padding-bottom:70px;border-bottom:1px solid var(--hairline)}
+.about-chapter-row:last-child{border-bottom:none;padding-bottom:0}
+.about-chapter-row:nth-child(even) .chapter-media-wrap{order:2}
+.about-chapter-row:nth-child(even) .chapter-content-wrap{order:1}
+.chapter-media-wrap{position:relative;aspect-ratio:4/5;width:100%;background:var(--bg-soft);border-radius:8px;overflow:hidden;border:1px solid var(--hairline);box-shadow:var(--shadow-art);display:flex;align-items:center;justify-content:center;transition:transform .4s,box-shadow .4s}
+.chapter-media-wrap:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover)}
+.chapter-media-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;transition:transform .7s cubic-bezier(.16,1,.3,1)}
+.chapter-media-wrap.media-portrait img{object-position:center top}
+.chapter-media-wrap.media-horizontal-bag{aspect-ratio:16/11;background:#F4F1EC}
+.chapter-media-wrap:hover img{transform:scale(1.03)}
+.clean-slot-overlay{position:absolute;inset:0;padding:36px;display:none;flex-direction:column;justify-content:space-between;background:radial-gradient(circle,#FAF9F7,#F5F3EF);text-align:left;z-index:1}
+.slot-label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+.slot-filepath{font-family:monospace;font-size:12px;background:#fff;padding:8px 14px;border:1px solid var(--hairline-dark);border-radius:4px;display:inline-block}
+.slot-ratio-note{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fg-subtle)}
+.chapter-content-wrap{display:flex;flex-direction:column;justify-content:center}
+.chapter-eyebrow{font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:600;color:var(--pink-rose);margin-bottom:12px}
+.chapter-title{font-family:var(--font-display);font-size:clamp(30px,3.6vw,44px);font-weight:400;line-height:1.1;letter-spacing:-.01em;margin-bottom:18px}
+.chapter-quote{font-family:var(--font-serif);font-style:italic;font-size:20px;line-height:1.5;margin-bottom:16px;padding-left:18px;border-left:2px solid var(--pink-soft)}
+.chapter-body{font-size:15.5px;color:var(--fg-muted);line-height:1.85;margin-bottom:22px}
+.chapter-meta-pills{display:flex;flex-wrap:wrap;gap:8px}
+.chapter-pill{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--fg-muted);background:var(--bg-soft);padding:6px 14px;border-radius:100px;border:1px solid var(--hairline)}
+
+/* =====================================================================
+   7. TABLE OF CONTENTS — TURNTABLE
+   ===================================================================== */
+.vinyl-stage-section{background:radial-gradient(circle at 50% 45%,#FFF0F6 0%,#FAF9F7 60%,#fff 100%);border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:120px 0}
+.vinyl-stage-container{display:flex;flex-direction:column;align-items:center;max-width:900px;margin:0 auto}
+.vinyl-title-overlap{font-family:var(--font-display);font-size:clamp(46px,8vw,78px);font-weight:400;line-height:.88;letter-spacing:-.02em;text-transform:uppercase;text-align:center;margin-bottom:28px}
+.turntable-deck-chassis{width:min(640px,94vw);background:linear-gradient(145deg,#fff,#F5F4F0);border:1px solid var(--hairline-dark);border-radius:20px;padding:36px 36px 28px;box-shadow:var(--shadow-turntable);position:relative;display:flex;flex-direction:column;align-items:center}
+.turntable-top-meta{width:100%;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--fg-subtle)}
+.power-led-group{display:flex;align-items:center;gap:8px}
+.turntable-led{width:8px;height:8px;border-radius:50%;background:#D4669A;box-shadow:0 0 12px #D4669A;transition:all .3s}
+.turntable-led.off{background:#CCC;box-shadow:none}
+.turntable-platter-well{position:relative;width:min(440px,78vw);height:min(440px,78vw);margin:10px auto 26px;border-radius:50%;background:radial-gradient(circle,#EAE8E4,#D4D2CD);box-shadow:inset 0 6px 18px rgba(0,0,0,.15),0 8px 24px rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center}
+.tonearm-assembly{position:absolute;top:10px;right:18px;width:90px;height:240px;pointer-events:none;z-index:25;transform-origin:45px 30px;transform:rotate(6deg);transition:transform .8s cubic-bezier(.34,1.56,.64,1)}
+.tonearm-assembly.parked{transform:rotate(-32deg)}
+.tonearm-pivot-base{position:absolute;top:14px;left:30px;width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#E0E0E0,#777);box-shadow:0 4px 10px rgba(0,0,0,.3),inset 0 0 0 1px #FFF}
+.tonearm-rod{position:absolute;top:30px;left:44px;width:4px;height:180px;background:linear-gradient(to right,#B0B0B0,#FFF,#888);border-radius:2px;box-shadow:2px 2px 6px rgba(0,0,0,.25)}
+.tonearm-headshell{position:absolute;bottom:0;left:35px;width:22px;height:36px;background:linear-gradient(135deg,#222,#444);border-radius:3px;transform:rotate(-18deg);box-shadow:0 3px 8px rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px}
+.tonearm-needle-tip{width:4px;height:4px;background:var(--pink-rose);border-radius:50%;box-shadow:0 0 6px var(--pink-soft)}
+.vinyl-disc{position:absolute;inset:8px;border-radius:50%;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .4s;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.vinyl-disc:active{transform:scale(.985)}
+.vinyl-disc.spin-pulsing{animation:vinylTouchPulse .45s ease-out}
+@keyframes vinylTouchPulse{0%{transform:scale(1);filter:brightness(1)}50%{transform:scale(.98);filter:brightness(1.25)}100%{transform:scale(1);filter:brightness(1)}}
+.vinyl-disc.spinning{animation:spinVinylDisc 4s linear infinite}
+.vinyl-disc.paused{animation:none!important;transform:rotate(0)!important;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+@keyframes spinVinylDisc{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.disc-skin-pink{background:repeating-radial-gradient(circle at 50% 50%,rgba(255,175,213,.92) 0,rgba(255,175,213,.92) 2.5px,rgba(240,130,185,.95) 3.5px,rgba(255,175,213,.92) 5px),radial-gradient(circle,#FFAFD5,#F186B8);box-shadow:0 16px 45px rgba(212,102,154,.4),inset 0 0 0 2px rgba(255,255,255,.7)}
+.disc-skin-white{background:repeating-radial-gradient(circle at 50% 50%,rgba(255,255,255,.95) 0,rgba(255,255,255,.95) 2.5px,rgba(220,220,220,.9) 3.5px,rgba(255,255,255,.95) 5px),radial-gradient(circle,#FFF,#ECEBE6);box-shadow:0 16px 45px rgba(0,0,0,.12),inset 0 0 0 2px rgba(255,255,255,.9)}
+.disc-skin-black{background:repeating-radial-gradient(circle at 50% 50%,#1A1A1A 0,#1A1A1A 2.5px,#0A0A0A 3.5px,#1A1A1A 5px),radial-gradient(circle,#2C2C2C,#080808);box-shadow:0 16px 45px rgba(0,0,0,.45),inset 0 0 0 2px rgba(255,255,255,.15)}
+.disc-skin-lilac{background:repeating-radial-gradient(circle at 50% 50%,rgba(230,160,255,.92) 0,rgba(230,160,255,.92) 2.5px,rgba(180,100,230,.95) 3.5px,rgba(230,160,255,.92) 5px),radial-gradient(circle,#E8A5FF,#C36BE8);box-shadow:0 16px 45px rgba(195,107,232,.4),inset 0 0 0 2px rgba(255,255,255,.8)}
+.vinyl-light-sheen{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,rgba(255,255,255,.28) 45deg,transparent 90deg,rgba(255,255,255,.28) 225deg,transparent 270deg);pointer-events:none}
+.disc-center-label{position:absolute;top:50%;left:50%;width:32%;height:32%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#222,#0D0D0D);box-shadow:0 4px 16px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;z-index:10;pointer-events:none}
+.disc-center-hole{width:14%;height:14%;border-radius:50%;background:#fff;box-shadow:inset 0 0 4px rgba(0,0,0,.9);margin-bottom:2px}
+.disc-label-text{font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pink-soft)}
+.record-track-tag{position:absolute;font-weight:700;color:#111;text-transform:uppercase;z-index:12;transition:all .2s;cursor:pointer;line-height:1.1}
+.record-track-tag:hover{color:var(--pink-rose);transform:scale(1.12);text-shadow:0 2px 10px rgba(255,255,255,.8)}
+.disc-skin-black .record-track-tag{color:#fff}
+.tag-num{font-size:14px;font-weight:800;display:block}
+.tag-title{font-size:10.5px;letter-spacing:.04em}
+.rt-pos-1{top:20%;left:16%}.rt-pos-2{bottom:26%;left:11%}.rt-pos-3{top:30%;right:12%;text-align:right}.rt-pos-4{bottom:20%;right:15%;text-align:right}
+.turntable-console-bar{width:100%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;padding-top:18px;border-top:1px solid var(--hairline-dark)}
+.console-cluster{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.hw-btn{background:#fff;color:var(--fg);border:1px solid var(--hairline-dark);padding:9px 20px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;transition:all .25s;box-shadow:0 2px 6px rgba(0,0,0,.03);display:inline-flex;align-items:center;gap:8px}
+.hw-btn:hover{background:var(--fg);color:#fff;border-color:var(--fg);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.08)}
+.hw-btn.active-rose{background:var(--pink-rose);color:#fff;border-color:var(--pink-rose);box-shadow:0 4px 14px var(--pink-glow)}
+.vinyl-edition-pill{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--fg-muted);background:var(--bg-soft);padding:8px 18px;border-radius:100px;border:1px solid var(--hairline);display:inline-flex;align-items:center;gap:8px}
+.vinyl-edition-pill .dot{width:8px;height:8px;border-radius:50%;background:var(--pink-rose);box-shadow:0 0 8px var(--pink-glow);transition:background .3s}
+.vinyl-sleeves-shelf{margin-top:36px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.shelf-label{font-size:11px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--fg-subtle);text-align:center}
+.vinyl-swatch-list{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.vinyl-swatch-card{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--hairline-dark);padding:8px 16px;border-radius:100px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--fg);box-shadow:0 2px 8px rgba(0,0,0,.02);transition:all .25s}
+.vinyl-swatch-card:hover,.vinyl-swatch-card.active{border-color:var(--pink-rose);transform:translateY(-3px);box-shadow:0 8px 20px rgba(212,102,154,.2)}
+.swatch-circle{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.1)}
+.swatch-pink{background:#FFAFD5}.swatch-white{background:#FFF;border:1px solid #CCC}.swatch-black{background:#111}.swatch-lilac{background:#E095FF}
+
+/* =====================================================================
+   8. SELECTED WORK (3 blocks)
+   ===================================================================== */
+.work-editorial-list{display:flex;flex-direction:column;gap:110px}
+.work-project-entry{scroll-margin-top:100px}
+.work-entry-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:18px;flex-wrap:wrap;gap:12px}
+.work-entry-num{font-size:12px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--pink-rose)}
+.work-entry-genre{font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--fg-subtle)}
+.work-entry-title{font-family:var(--font-display);font-size:clamp(32px,4.2vw,52px);font-weight:400;line-height:1.08;letter-spacing:-.01em;margin-bottom:16px}
+.work-entry-title .cursive-accent{font-family:var(--font-cursive);font-size:1.1em;color:var(--pink-rose);text-shadow:0 4px 18px var(--pink-glow);text-transform:none;margin-left:6px}
+.work-entry-summary{font-size:16px;color:var(--fg-muted);line-height:1.85;max-width:68ch;margin-bottom:22px}
+.work-cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.btn-action-pill{display:inline-flex;align-items:center;gap:8px;background:var(--fg);color:#fff;padding:12px 26px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.btn-action-pill:hover{background:var(--pink-rose);transform:translateY(-2px);box-shadow:0 10px 24px rgba(212,102,154,.3)}
+.btn-action-ghost{background:#fff;color:var(--fg);border:1px solid var(--hairline-dark);box-shadow:none}
+.btn-action-ghost:hover{border-color:var(--pink-rose);color:#fff}
+.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px}
+.tag-chip{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;color:var(--fg-muted);background:var(--bg-soft);padding:6px 14px;border-radius:100px;border:1px solid var(--hairline)}
+
+/* 4A project index (short list of projects with small descriptions) */
+.proj-list{margin-top:6px;border-top:1px solid var(--hairline-dark)}
+.proj{display:grid;grid-template-columns:48px 1fr 190px 56px;gap:20px;align-items:baseline;padding:20px 6px;border-bottom:1px solid var(--hairline);transition:background .3s,padding .3s}
+.proj:hover{background:var(--pink-light);padding-left:16px}
+.proj-num{font-family:var(--font-display);color:var(--pink-rose);font-size:18px}
+.proj h4{font-family:var(--font-serif);font-style:italic;font-weight:400;font-size:24px;line-height:1.2}
+.proj p{font-size:14px;color:var(--fg-muted);line-height:1.7;margin-top:2px}
+.proj-cat{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+.proj-year{font-size:11px;letter-spacing:.14em;color:var(--fg-subtle);text-align:right}
+
+/* 4B photography: a pile of photobooth strips. Hover (or tap) = they spread out. */
+.booth-head{display:flex;gap:22px;align-items:center;margin:80px 0 6px;max-width:70ch}
+.booth-head h4{font-family:var(--font-display);font-size:clamp(22px,2.2vw,28px);font-weight:400;line-height:1.15}
+.booth-head p{font-size:14.5px;color:var(--fg-muted);line-height:1.8}
+.booth{position:relative;height:clamp(480px,44vw,540px);margin-top:10px}
+.booth-stack{position:absolute;inset:0}
+.strip{--o:calc(var(--i) - var(--mid,1.5));position:absolute;left:50%;top:26px;width:clamp(130px,13vw,164px);background:#fff;padding:10px 10px 28px;display:flex;flex-direction:column;gap:8px;z-index:calc(var(--i) + 1);box-shadow:0 18px 40px -14px rgba(0,0,0,.22),0 2px 5px rgba(0,0,0,.06);transform:translateX(-50%) translateX(calc(var(--o)*9px)) rotate(calc(var(--o)*5deg));transition:transform .85s cubic-bezier(.16,1,.3,1),box-shadow .4s;transition-delay:calc(var(--i)*.035s)}
+.strip:nth-child(even){--alt:1}
+.booth.fanned .strip{transform:translateX(-50%) translateX(calc(var(--o)*var(--spacing,190px))) translateY(calc(var(--alt,0)*26px)) rotate(calc(var(--o)*1.6deg))}
+.booth.fanned .strip:hover{transform:translateX(-50%) translateX(calc(var(--o)*var(--spacing,190px))) translateY(calc(var(--alt,0)*26px - 14px)) rotate(0deg);z-index:30;transition-delay:0s;box-shadow:var(--shadow-hover)}
+.strip::after{content:'✦ lina orundas';position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:7.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-subtle);font-weight:600}
+.frame{aspect-ratio:1/1;cursor:zoom-in}
+.frame:hover img{transform:scale(1.06)}
+@media(prefers-reduced-motion:reduce){.aura,.ld-aura{animation:none}.strip{transition:none}}
+
+
+/* 4A hover-to-browse polaroids */
+.pola-hint{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-subtle);font-weight:600;text-align:center;margin-top:6px}
+.pola-stage{display:flex;gap:30px;overflow-x:auto;overflow-y:hidden;padding:56px 24px 64px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pola-stage::-webkit-scrollbar{display:none}
+.polaroid{flex:0 0 clamp(270px,30vw,350px);background:#fff;padding:14px 14px 0;border-radius:4px;box-shadow:0 18px 40px -12px rgba(0,0,0,.18),0 2px 6px rgba(0,0,0,.05);transform:rotate(var(--r,-2deg)) translateY(var(--y,0));transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .4s;cursor:zoom-in}
+.polaroid:nth-child(3n+1){--r:-3deg}
+.polaroid:nth-child(3n+2){--r:2deg;--y:22px}
+.polaroid:nth-child(3n){--r:-1deg;--y:6px}
+.polaroid:hover{transform:rotate(0) translateY(-12px) scale(1.04);box-shadow:var(--shadow-hover);z-index:3}
+.polaroid .ph{aspect-ratio:1/1.08}
+.polaroid:hover .ph img{transform:scale(1.04)}
+.polaroid figcaption{padding:14px 4px 18px}
+.pol-title{display:block;font-family:var(--font-serif);font-style:italic;font-size:22px;line-height:1.2}
+.pol-meta{display:block;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--pink-rose);font-weight:600;margin-top:4px}
+.revealed .polaroid{animation:cardIn .9s cubic-bezier(.16,1,.3,1) backwards;animation-delay:calc(var(--i,0)*.1s)}
+@keyframes cardIn{from{opacity:0;translate:0 50px}}
+
+/* 4B editorial layout (images + words mixed like a magazine page) */
+.ed-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:22px}
+.ed-img{position:relative;border-radius:6px;overflow:hidden;cursor:zoom-in;box-shadow:var(--shadow-art);border:1px solid var(--hairline)}
+.ed-img .ph{width:100%;height:100%;min-height:230px}
+.ed-img:hover .ph img{transform:scale(1.05)}
+.ed-label{position:absolute;left:14px;bottom:14px;z-index:2;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;background:rgba(255,255,255,.92);padding:6px 12px;border-radius:100px}
+.ed-text{display:flex;flex-direction:column;justify-content:center;gap:10px;padding:8px 6px}
+.ed-num{font-family:var(--font-display);font-size:40px;line-height:1;color:var(--pink-rose)}
+.ed-text h4{font-family:var(--font-display);font-size:clamp(22px,2.2vw,28px);font-weight:400;line-height:1.15}
+.ed-text p{font-size:14.5px;color:var(--fg-muted);line-height:1.8}
+.ed-text .tag-row{margin:4px 0 0}
+.ed-1{grid-column:1/6;grid-row:1/3}
+.ed-t1{grid-column:6/13;grid-row:1}
+.ed-2{grid-column:6/9;grid-row:2}
+.ed-t2{grid-column:9/13;grid-row:2}
+.ed-t3{grid-column:1/6;grid-row:3}
+.ed-3{grid-column:6/13;grid-row:3}
+.ed-3 .ph{min-height:280px}
+
+/* 4C UX / UI cards */
+.ux-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:8px}
+.ux-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--hairline-dark);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-art)}
+.ux-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-hover);border-color:var(--pink-rose)}
+.ux-card .ph{aspect-ratio:16/10}
+.ux-card:hover .ph img{transform:scale(1.04)}
+.ux-body{padding:22px 24px 26px;display:flex;flex-direction:column;gap:8px}
+.ux-eyebrow{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+.ux-body h4{font-family:var(--font-display);font-size:24px;font-weight:400;line-height:1.15}
+.ux-body p{font-size:14.5px;color:var(--fg-muted);line-height:1.75}
+.ux-body .tag-row{margin:4px 0 6px}
+.ux-go{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+
+/* LIGHTBOX (click any polaroid / photo to see it big) */
+.lightbox{position:fixed;inset:0;z-index:2000;background:rgba(255,245,250,.9);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:center;padding:40px 20px;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility .35s}
+.lightbox.open{opacity:1;visibility:visible}
+.lb-frame{max-width:min(880px,92vw);max-height:92vh;display:flex;flex-direction:column;align-items:center;text-align:center;transform:scale(.96);transition:transform .45s cubic-bezier(.16,1,.3,1)}
+.lightbox.open .lb-frame{transform:none}
+.lb-media{background:#fff;padding:14px;border-radius:4px;box-shadow:0 30px 80px -20px rgba(212,102,154,.45)}
+.lb-media img{display:block;max-width:100%;max-height:68vh;object-fit:contain}
+.lb-ph{width:min(560px,80vw);aspect-ratio:4/3;background:linear-gradient(160deg,var(--pink-light),var(--bg-cream));display:flex;align-items:center;justify-content:center;font-family:monospace;font-size:13px;color:var(--pink-rose);padding:20px}
+.lb-title{font-family:var(--font-serif);font-style:italic;font-size:28px;margin-top:20px;line-height:1.2}
+.lb-note{font-size:14px;color:var(--fg-muted);max-width:60ch;margin-top:6px}
+.lb-close{position:absolute;top:22px;right:26px;width:44px;height:44px;border-radius:50%;background:#fff;border:1px solid var(--hairline-dark);font-size:16px;box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.lb-close:hover{background:var(--pink-rose);color:#fff;border-color:var(--pink-rose)}
+
+/* =====================================================================
+   9. CONTACT
+   ===================================================================== */
+.contact-section-art{background:radial-gradient(circle at 50% 20%,rgba(255,175,213,.14) 0%,transparent 60%),var(--bg-soft);border-top:1px solid var(--hairline);padding:130px 0 90px}
+.contact-giant-title{font-family:var(--font-display);font-size:clamp(46px,8vw,92px);font-weight:400;line-height:.92;letter-spacing:-.02em;text-transform:uppercase;text-align:center;margin-bottom:20px}
+.contact-statement-center{font-size:17px;color:var(--fg-muted);max-width:62ch;line-height:1.85;margin:0 auto 50px;text-align:center}
+/* contact: one open layout, no boxes */
+.connect-layout{display:grid;grid-template-columns:.9fr 1.1fr;gap:90px;align-items:center;margin-bottom:64px}
+.connect-photo{position:relative;width:100%;max-width:420px;justify-self:center}
+.connect-aura{position:absolute;inset:-14%;background:radial-gradient(circle,rgba(255,175,213,.75),rgba(232,165,255,.2) 55%,transparent 70%);filter:blur(36px);z-index:0}
+.connect-arch{position:relative;z-index:1;aspect-ratio:3/4;border-radius:999px 999px 18px 18px;border:1px solid var(--hairline-dark);box-shadow:var(--shadow-art)}
+.connect-badge{position:absolute;z-index:2;right:-28px;bottom:36px;width:118px;height:118px;animation:spinBadge 18s linear infinite;filter:drop-shadow(0 8px 18px rgba(212,102,154,.25))}
+.connect-badge text{font-family:var(--font-sans);font-size:9.5px;font-weight:600;letter-spacing:.14em;fill:var(--fg)}
+@keyframes spinBadge{to{transform:rotate(360deg)}}
+.connect-body{display:flex;flex-direction:column;align-items:flex-start}
+.connect-clock{font-family:monospace;font-size:12px;letter-spacing:.1em;color:var(--fg-muted);display:flex;align-items:center;gap:10px;margin-bottom:26px}
+.connect-clock b{color:var(--pink-rose)}
+.connect-label{font-size:10.5px;letter-spacing:.28em;text-transform:uppercase;font-weight:600;color:var(--pink-rose);margin:20px 0 8px}
+.connect-email{width:100%;display:flex;justify-content:space-between;align-items:baseline;gap:16px;text-align:left;font-family:var(--font-serif);font-style:italic;font-weight:300;font-size:clamp(24px,3vw,40px);line-height:1.15;color:var(--fg);border-bottom:1px solid var(--hairline-dark);padding-bottom:12px;word-break:break-all;transition:color .25s,border-color .25s}
+.connect-email span{font-family:var(--font-sans);font-style:normal;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--pink-rose);font-weight:600;flex-shrink:0}
+.connect-email:hover{color:var(--pink-rose);border-color:var(--pink-rose)}
+.connect-topics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.inquiry-chip{display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3;font-size:11.5px;font-weight:500;color:var(--fg);padding:11px 10px;border:1px solid var(--hairline-dark);border-radius:100px;background:transparent;transition:all .2s}
+.inquiry-chip:hover,.inquiry-chip.selected{background:var(--fg);color:#fff;border-color:var(--fg)}
+@media(max-width:540px){.connect-topics{grid-template-columns:repeat(2,1fr)}}
+.connect-send{margin-top:26px}
+.connect-links{width:100%;margin-top:34px;padding-top:24px;border-top:1px solid var(--hairline)}
+.connect-linkedin{font-family:var(--font-display);font-size:22px;text-transform:uppercase;letter-spacing:.06em}
+.connect-linkedin span{color:var(--pink-rose)}
+.connect-linkedin:hover{color:var(--pink-rose)}
+.mini-links{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-subtle)}
+.mini-links a{padding:6px 14px;border:1px solid var(--hairline-dark);border-radius:100px;color:var(--fg-muted)}
+.mini-links a:hover{color:var(--pink-rose);border-color:var(--pink-rose)}
+.connect-note{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-subtle);margin-top:26px}
+.colophon-signature-centerpiece{text-align:center;padding:46px 0 30px;border-top:1px solid var(--hairline-dark)}
+.calligraphic-signoff{font-family:var(--font-cursive);font-size:clamp(48px,7vw,76px);color:var(--pink-rose);text-shadow:0 4px 24px var(--pink-glow);line-height:1;margin-bottom:12px;display:inline-block}
+.colophon-triad-table{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;max-width:900px;margin:34px auto 0;text-align:left;border-top:1px solid var(--hairline);padding-top:28px}
+.colophon-triad-col{display:flex;flex-direction:column;gap:6px}
+.col-title{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;color:var(--pink-rose)}
+.col-body{font-size:12px;color:var(--fg-muted);line-height:1.6}
+footer{padding:32px 0;border-top:1px solid var(--hairline);background:#fff}
+.footer-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;color:var(--fg-subtle)}
+.footer-row a:hover{color:var(--pink-rose)}
+.toast-pill{position:fixed;bottom:30px;right:30px;background:var(--fg);color:#fff;padding:12px 24px;border-radius:100px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:999;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.16,1,.3,1);pointer-events:none}
+.toast-pill.show{transform:none;opacity:1}
+
+/* =====================================================================
+   10. MOBILE
+   ===================================================================== */
+@media(max-width:860px){
+  .wrap{padding:0 24px}.nav-links{display:none}.nav-status span:last-child{display:none}
+  section{padding:90px 0}
+  .hero-editorial{padding:130px 20px 90px}
+  .about-chapter-row{grid-template-columns:1fr;gap:34px}
+  .about-chapter-row:nth-child(even) .chapter-media-wrap{order:1}
+  .about-chapter-row:nth-child(even) .chapter-content-wrap{order:2}
+  .proj{grid-template-columns:36px 1fr;gap:6px 14px}
+  .proj-cat,.proj-year{grid-column:2;text-align:left}
+  .ed-grid{grid-template-columns:1fr}
+  .ed-1,.ed-t1,.ed-2,.ed-t2,.ed-t3,.ed-3{grid-column:1/-1;grid-row:auto}
+  .ed-img .ph{aspect-ratio:4/3;min-height:0}
+  .ux-grid{grid-template-columns:1fr}
+  .connect-layout{grid-template-columns:1fr;gap:60px}
+  .connect-badge{right:-8px}
+  .colophon-triad-table{grid-template-columns:1fr}
+  .tonearm-assembly{display:none}
+  .pola-stage{padding-left:6px;padding-right:6px}
+}
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     LOADING SCREEN
+     Built by JavaScript (section 0 at the bottom). Nothing to edit here.
+     ✏️ To change the NAME shown, edit "NAME_ROWS" in the script.
+     ===================================================================== -->
+<div id="loader" aria-hidden="true">
+  <div class="ld-aura"></div>
+  <div class="ld-card" id="ldCard"></div>
+</div>
+
+<!-- =====================================================================
+     TOP BAR
+     ✏️ EDIT: your name next to the logo, and the menu words
+     ===================================================================== -->
+<header id="siteHeader">
+  <nav class="wrap">
+    <a href="#home" class="nav-brand" aria-label="Lina Orundas Home">
+      <div class="brand-logo-mark">
+        <svg class="brand-svg-crest" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="17" stroke="rgba(255,255,255,0.22)" stroke-width="0.75"/>
+          <circle cx="18" cy="18" r="14.5" stroke="rgba(255,175,213,0.4)" stroke-width="0.5" stroke-dasharray="1.5 2"/>
+          <path d="M10.5 9.5 H15 V22.5 H19.8 V25 H10.5 V9.5 Z" fill="#FFFFFF"/>
+          <ellipse cx="20.5" cy="17.5" rx="5.6" ry="7.8" stroke="#FFAFD5" stroke-width="1.75" transform="rotate(14 20.5 17.5)"/>
+          <path d="M26.5 7.5 L27.4 9.6 L29.5 10.5 L27.4 11.4 L26.5 13.5 L25.6 11.4 L23.5 10.5 L25.6 9.6 Z" fill="#FFAFD5"/>
+        </svg>
+      </div>
+      <div class="nav-brand-text">
+        <span class="nav-name">Lina Orundas</span>
+        <span class="nav-edition">Vol. 2026 · Editorial Archive</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#toc">Index</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="nav-status"><span class="nav-dot"></span><span>Open for Commissions</span></div>
+  </nav>
+</header>
+
+<main>
+
+<!-- =====================================================================
+     1. HERO
+     The pink glow behind the name = the three ".aura" circles (CSS section 4).
+     ✏️ EDIT: kicker line, statement paragraph, button texts
+     ===================================================================== -->
+<section class="hero-editorial" id="home">
+  <div class="hero-aura"><span class="aura a1"></span><span class="aura a2"></span><span class="aura a3"></span></div>
+
+  <div class="hero-inner wrap">
+    <span class="hero-kicker hero-fade" style="--d:.1s">Multidisciplinary Visual Artist</span>
+
+    <h1 class="hero-name hero-fade" style="--d:.25s">
+      <span class="hn-first">Lina</span>
+      <span class="hn-last">Orundas</span>
+    </h1>
+
+    <span class="hero-cursive-title hero-fade" style="--d:.45s">creative portfolio</span>
+
+    <!-- ✏️ EDIT: main intro sentence -->
+    <p class="hero-statement hero-fade" style="--d:.6s">
+      Multidisciplinary visual designer &amp; creative artist shaping social campaigns, magazine-style visual blogs, DJ curation, UX/UI architecture, and editorial print systems.
+    </p>
+
+    <div class="hero-actions hero-fade" style="--d:.75s">
+      <a href="#work" class="btn-minimal-black">Explore Selected Work ↓</a>
+      <a href="#contact" class="btn-minimal-ghost">Get in Touch</a>
+    </div>
+  </div>
+
+  <a href="#about" class="hero-scroll-cue hero-fade" style="--d:1s" aria-label="Scroll to about section">
+    <span>Scroll</span><div class="scroll-line-art"></div>
+  </a>
+</section>
+
+<!-- =====================================================================
+     2. ABOUT  (4 chapters: photo + text)
+     ✏️ EDIT: each chapter-title, chapter-body, pills, and the image path in <img src="...">
+     Image sizes: portrait & chapter 3/4 = vertical 4:5, chapter 2 = horizontal.
+     ===================================================================== -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-header-art reveal-on-scroll">
+      <div><span class="sec-tag-small">01. Persona &amp; Practice</span><h2 class="sec-heading-display">About <span class="cursive-glow">Me</span></h2></div>
+      <span class="sec-index-pill">01 / 04</span>
+    </div>
+
+    <div class="about-chapters-list">
+
+      <!-- Chapter 1 · portrait -->
+      <div class="about-chapter-row reveal-on-scroll">
+        <div class="chapter-media-wrap media-portrait">
+          <img src="images/portrait.jpg" alt="Portrait of Lina Orundas" onload="this.nextElementSibling.style.display='none';" onerror="if(this.src.endsWith('portrait.jpg')){ this.src='images/about-portrait.jpg'; } else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }" />
+          <div class="clean-slot-overlay"><span class="slot-label">01. Portrait Frame</span><span class="slot-filepath">images/portrait.jpg</span><span class="slot-ratio-note">4:5 vertical</span></div>
+        </div>
+        <div class="chapter-content-wrap">
+          <span class="chapter-eyebrow">01 / Identity &amp; Vision</span>
+          <h3 class="chapter-title">New Media Design &amp; <span class="cursive-glow">Tactile Craft</span></h3>
+          <p class="chapter-body">I'm a New Media Design student and multidisciplinary artist originating from Istanbul and currently based in Sweden. Bridging vibrant cultural perspectives with Scandinavian editorial minimalism, I craft human-centered digital experiences rooted in tactile aesthetics, intentional whitespace, and sharp narrative pacing.</p>
+          <div class="chapter-meta-pills"><span class="chapter-pill">Roots: Istanbul ✦ Sweden (CET)</span><span class="chapter-pill">Focus: Magazine Blog, UX/UI, Editorial &amp; DJ</span></div>
+        </div>
+      </div>
+
+      <!-- Chapter 2 · what's in my bag -->
+      <div class="about-chapter-row reveal-on-scroll">
+        <div class="chapter-content-wrap">
+          <span class="chapter-eyebrow">02 / Everyday Rituals</span>
+          <h3 class="chapter-title">What's in my <span class="cursive-glow">Bag?</span></h3>
+          <p class="chapter-body">My everyday creative rituals: Figma for interface prototypes, Premiere Pro &amp; CapCut for motion editing, audio samplers, DJ gear, concept notebooks, and an obsession with bold editorial typography.</p>
+          <div class="chapter-meta-pills"><span class="chapter-pill">Software: Figma, InDesign, Photoshop, Premiere</span><span class="chapter-pill">Audio: Sampling, DJ Mixing, Tone Copy</span></div>
+        </div>
+        <div class="chapter-media-wrap media-horizontal-bag">
+          <img src="images/whats-in-my-bag.gif" alt="What's in my bag showcase animation" onload="this.nextElementSibling.style.display='none';" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="clean-slot-overlay"><span class="slot-label">02. Bag Showcase GIF</span><span class="slot-filepath">images/whats-in-my-bag.gif</span><span class="slot-ratio-note">Horizontal</span></div>
+        </div>
+      </div>
+
+      <!-- Chapter 3 · tools -->
+      <div class="about-chapter-row reveal-on-scroll">
+        <div class="chapter-media-wrap">
+          <img src="images/tools-setup.gif" alt="Tools & setup workspace animation" onload="this.nextElementSibling.style.display='none';" onerror="if(this.src.endsWith('.gif')){ this.src='images/tools-setup.jpg'; } else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }" />
+          <div class="clean-slot-overlay"><span class="slot-label">03. Tools Setup</span><span class="slot-filepath">images/tools-setup.gif (or .jpg)</span><span class="slot-ratio-note">4:5 vertical</span></div>
+        </div>
+        <div class="chapter-content-wrap">
+          <span class="chapter-eyebrow">03 / Tooling &amp; Precision</span>
+          <h3 class="chapter-title">Structure Rooted in <span class="cursive-glow">Emotion</span></h3>
+          <p class="chapter-body">Combining rigorous graphic grids with fluid creative intuition. Whether directing video cuts, designing multi-page print brochures, or mixing soundscapes, every detail has intent.</p>
+          <div class="chapter-meta-pills"><span class="chapter-pill">Adobe Creative Cloud</span><span class="chapter-pill">Figma Prototyping</span><span class="chapter-pill">Motion &amp; Video Cuts</span></div>
+        </div>
+      </div>
+
+      <!-- Chapter 4 · beyond the screen -->
+      <div class="about-chapter-row reveal-on-scroll">
+        <div class="chapter-content-wrap">
+          <span class="chapter-eyebrow">04 / Sonic &amp; Visual Universe</span>
+          <h3 class="chapter-title">Beyond the <span class="cursive-glow">Screen</span></h3>
+          <div class="chapter-quote">"Writing copy, DJing, sampling soundscapes, and singing with the same emotional energy I put into design."</div>
+          <p class="chapter-body">Exploring rhythm and mood across sonic production, analog photography, and cross-medium storytelling.</p>
+        </div>
+        <div class="chapter-media-wrap">
+          <img src="images/creative-focus.jpg" alt="Artistic creative focus visual" onload="this.nextElementSibling.style.display='none';" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="clean-slot-overlay"><span class="slot-label">04. Focus Frame</span><span class="slot-filepath">images/creative-focus.jpg</span><span class="slot-ratio-note">4:5 vertical</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     3. TABLE OF CONTENTS (turntable)
+     Each label on the record jumps to a section. 
+     ✏️ EDIT: the words in <span class="tag-title"> . The href="#..." must match
+     the ids of the work blocks (w-creative, w-marketing, w-uiux) and #contact.
+     ===================================================================== -->
+<section class="vinyl-stage-section" id="toc">
+  <div class="wrap">
+    <div class="vinyl-stage-container reveal-on-scroll">
+      <h2 class="vinyl-title-overlap">table of content</h2>
+
+      <div class="turntable-deck-chassis" id="turntableDeck">
+        <div class="turntable-top-meta">
+          <div class="power-led-group"><div class="turntable-led" id="powerLed"></div><span id="motorStatusText">Motor Active · Touch Vinyl to Swap</span></div>
+          <span>LO-HiFi Edition Mk.II</span>
+        </div>
+
+        <div class="turntable-platter-well">
+          <div class="tonearm-assembly" id="tonearmArm">
+            <div class="tonearm-pivot-base"></div><div class="tonearm-rod"></div>
+            <div class="tonearm-headshell"><div class="tonearm-needle-tip"></div></div>
+          </div>
+
+          <div class="vinyl-disc spinning disc-skin-pink" id="vinylDisc" title="Touch or click the vinyl to change its color" onclick="handleVinylDiscClick(event)">
+            <div class="vinyl-light-sheen"></div>
+            <div class="disc-center-label">
+              <div class="disc-center-hole"></div>
+              <span class="disc-label-text">Lina Orundas</span>
+              <span style="font-size:7.5px;letter-spacing:.12em;color:#FFF;opacity:.7;">VOL. 2026</span>
+            </div>
+            <a href="#w-creative"  class="record-track-tag rt-pos-1" onclick="playBeep()"><span class="tag-num">01</span><span class="tag-title">graphic, editorial<br>&amp; branding</span></a>
+            <a href="#w-marketing" class="record-track-tag rt-pos-2" onclick="playBeep()"><span class="tag-num">02</span><span class="tag-title">marketing,<br>seo &amp; photo</span></a>
+            <a href="#w-uiux"      class="record-track-tag rt-pos-3" onclick="playBeep()"><span class="tag-num">03</span><span class="tag-title">ux / ui<br>design</span></a>
+            <a href="#contact"     class="record-track-tag rt-pos-4" onclick="playBeep()"><span class="tag-num">04</span><span class="tag-title">connect</span></a>
+          </div>
+        </div>
+
+        <div class="turntable-console-bar">
+          <div class="console-cluster">
+            <button class="hw-btn active-rose" id="spinToggleBtn" onclick="toggleTurntableSpin()" title="Pause / play"><span id="spinBtnIcon">❚❚</span><span id="spinBtnText">Spinning</span></button>
+          </div>
+          <div class="console-cluster">
+            <button class="hw-btn" onclick="cycleNextVinylSkin()"><span>✦ Change Vinyl</span></button>
+            <div class="vinyl-edition-pill" id="vinylEditionPill"><span class="dot"></span><span id="vinylEditionName">Bubblegum Blush</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vinyl-sleeves-shelf">
+        <span class="shelf-label">✦ Collectible Vinyl Pressings</span>
+        <div class="vinyl-swatch-list">
+          <button class="vinyl-swatch-card active" onclick="swapVinylSkin('pink')"><span class="swatch-circle swatch-pink"></span><span>Bubblegum Blush</span></button>
+          <button class="vinyl-swatch-card" onclick="swapVinylSkin('white')"><span class="swatch-circle swatch-white"></span><span>Pearl Atelier Glaze</span></button>
+          <button class="vinyl-swatch-card" onclick="swapVinylSkin('black')"><span class="swatch-circle swatch-black"></span><span>Obsidian 180g Ink</span></button>
+          <button class="vinyl-swatch-card" onclick="swapVinylSkin('lilac')"><span class="swatch-circle swatch-lilac"></span><span>Electric Acid Lilac</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     4. SELECTED WORK — only 3 blocks
+       4A  Graphic design · Editorial writing · Branding   (hover-to-browse polaroids)
+       4B  Marketing · SEO · PR · Social media              (magazine layout)
+       4C  UX / UI                                          (Behance + 2 clickable cards)
+     ===================================================================== -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-header-art reveal-on-scroll">
+      <div><span class="sec-tag-small">03. Archive &amp; Gallery</span><h2 class="sec-heading-display">Selected <span class="cursive-glow">Work</span></h2></div>
+      <span class="sec-index-pill">03 / 04</span>
+    </div>
+
+    <div class="work-editorial-list">
+
+      <!-- ===============================================================
+           4A · GRAPHIC DESIGN, EDITORIAL WRITING & BRANDING
+           HOW IT WORKS: move your mouse left/right over the polaroids and they glide.
+           (On phones: just swipe.)  Click a polaroid = opens it big.
+           ✏️ EDIT: title/summary, the 3 "facet" descriptions, the Portal Press link,
+                    and every polaroid (image path, title, category, note).
+           ✏️ ADD a polaroid: copy one <figure class="polaroid"> block and paste it in the row.
+           ✏️ REMOVE a polaroid: delete its whole <figure> block.
+           =============================================================== -->
+      <div class="work-project-entry reveal-on-scroll" id="w-creative">
+        <div class="work-entry-header"><span class="work-entry-num">01 / ARCHIVE</span><span class="work-entry-genre">Print · Editorial · Identity</span></div>
+        <h3 class="work-entry-title">Graphic Design, Editorial Writing &amp; <span class="cursive-accent">Branding</span></h3>
+
+        <!-- ✏️ one short intro line -->
+        <p class="work-entry-summary">Print, editorial and identity work. A few selected projects below.</p>
+
+        <div class="work-cta-row">
+          <!-- ✏️ LINK: Portal Press (replace the URL if Portal Press has its own page) -->
+          <a href="https://instagram.com/luakovsky" target="_blank" rel="noopener" class="btn-action-pill">Read Portal Press ↗</a>
+        </div>
+
+        <!-- POLAROID ROW -->
+        <div class="pola-stage" id="polaStage">
+
+          <!-- Polaroid 1 · ✏️ image path, data-title (big title), data-note (big text), data-ph (placeholder name) -->
+          <figure class="polaroid" style="--i:0" data-lightbox data-title="Poster Series" data-note="Short description of this project. Edit me." data-ph="images/graphic-1.jpg">
+            <div class="ph" data-ph="images/graphic-1.jpg"><img src="images/graphic-1.jpg" alt="Poster series" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Poster Series</span><span class="pol-meta">Graphic · Print</span></figcaption>
+          </figure>
+
+          <figure class="polaroid" style="--i:1" data-lightbox data-title="Editorial Spread" data-note="Short description of this project. Edit me." data-ph="images/graphic-2.jpg">
+            <div class="ph" data-ph="images/graphic-2.jpg"><img src="images/graphic-2.jpg" alt="Editorial spread" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Editorial Spread</span><span class="pol-meta">Graphic · Layout</span></figcaption>
+          </figure>
+
+          <figure class="polaroid" style="--i:2" data-lightbox data-title="Portal Press Essay" data-note="Short description of this piece. Edit me." data-ph="images/editorial-1.jpg">
+            <div class="ph" data-ph="images/editorial-1.jpg"><img src="images/editorial-1.jpg" alt="Portal Press essay" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Portal Press Essay</span><span class="pol-meta">Editorial Writing</span></figcaption>
+          </figure>
+
+          <figure class="polaroid" style="--i:3" data-lightbox data-title="Mood Story" data-note="Short description of this piece. Edit me." data-ph="images/editorial-2.jpg">
+            <div class="ph" data-ph="images/editorial-2.jpg"><img src="images/editorial-2.jpg" alt="Mood story" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Mood Story</span><span class="pol-meta">Editorial Writing</span></figcaption>
+          </figure>
+
+          <figure class="polaroid" style="--i:4" data-lightbox data-title="Logotype &amp; Identity" data-note="Short description of this project. Edit me." data-ph="images/branding-1.jpg">
+            <div class="ph" data-ph="images/branding-1.jpg"><img src="images/branding-1.jpg" alt="Logotype and identity" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Logotype &amp; Identity</span><span class="pol-meta">Branding</span></figcaption>
+          </figure>
+
+          <figure class="polaroid" style="--i:5" data-lightbox data-title="Brand Guidelines" data-note="Short description of this project. Edit me." data-ph="images/branding-2.jpg">
+            <div class="ph" data-ph="images/branding-2.jpg"><img src="images/branding-2.jpg" alt="Brand guidelines" onerror="this.remove()"></div>
+            <figcaption><span class="pol-title">Brand Guidelines</span><span class="pol-meta">Branding</span></figcaption>
+          </figure>
+
+        </div>
+        <p class="pola-hint" id="polaHint">Move left &amp; right to browse · click to enlarge</p>
+
+        <!-- ✏️ PROJECT INDEX — the detail lives here, kept short.
+             Each row = one project: number · name + 1-2 line description · category · year.
+             Copy a whole <div class="proj"> to add one, delete one to remove it. -->
+        <div class="proj-list">
+          <div class="proj"><span class="proj-num">01</span><div class="proj-main"><h4>Poster Series</h4><p>What it was, who it was for, what you made (tools, format, print size). Edit me.</p></div><span class="proj-cat">Graphic · Print</span><span class="proj-year">2026</span></div>
+          <div class="proj"><span class="proj-num">02</span><div class="proj-main"><h4>Editorial Spread</h4><p>What it was, who it was for, what you made. Edit me.</p></div><span class="proj-cat">Graphic · Layout</span><span class="proj-year">2026</span></div>
+          <div class="proj"><span class="proj-num">03</span><div class="proj-main"><h4>Portal Press Essays</h4><p>The topics you write about and how often you publish. Edit me.</p></div><span class="proj-cat">Editorial Writing</span><span class="proj-year">2026</span></div>
+          <div class="proj"><span class="proj-num">04</span><div class="proj-main"><h4>Brand Identity Name</h4><p>The client or idea, the logotype, colors and where the identity lives (packaging, social...). Edit me.</p></div><span class="proj-cat">Branding</span><span class="proj-year">2026</span></div>
+          <div class="proj"><span class="proj-num">05</span><div class="proj-main"><h4>Brand Guidelines Name</h4><p>What the guidelines cover. Edit me.</p></div><span class="proj-cat">Branding</span><span class="proj-year">2026</span></div>
+        </div>
+      </div>
+
+      <!-- ===============================================================
+           4B · MARKETING, SEO, PR & SOCIAL MEDIA   (magazine-style layout)
+           Reads like a magazine page: photo, words, photo, words ...
+           ✏️ EDIT: each text block (number, title, paragraph, chips) and each photo
+                    (image path in <img src>, label = the little white tag on the photo).
+           Photos are also clickable (open big).
+           =============================================================== -->
+      <div class="work-project-entry reveal-on-scroll" id="w-marketing">
+        <div class="work-entry-header"><span class="work-entry-num">02 / ARCHIVE</span><span class="work-entry-genre">Strategy · Search · Stories · Photography</span></div>
+        <h3 class="work-entry-title">Marketing, SEO &amp; <span class="cursive-accent">PR</span></h3>
+        <p class="work-entry-summary">Helping brands get seen and remembered: clear strategy, content people want to read, and a presence that feels consistent on every platform. Plus the photography that goes with it.</p>
+
+        <div class="ed-grid">
+          <!-- Photo 1 (tall) -->
+          <figure class="ed-img ed-1" data-lightbox data-title="Marketing Campaign" data-note="Short description. Edit me." data-ph="images/marketing-1.jpg">
+            <div class="ph" data-ph="images/marketing-1.jpg"><img src="images/marketing-1.jpg" alt="Marketing campaign" onerror="this.remove()"></div>
+            <span class="ed-label">Campaign</span>
+          </figure>
+
+          <!-- Text 1 -->
+          <div class="ed-text ed-t1">
+            <span class="ed-num">01</span>
+            <h4>Marketing &amp; Brand Strategy</h4>
+            <p>Positioning, brand voice and audience thinking — turning an idea into campaigns, content calendars and consistent messages.</p>
+            <div class="tag-row"><span class="tag-chip">Strategy</span><span class="tag-chip">Content Calendar</span><span class="tag-chip">Brand Voice</span><span class="tag-chip">Campaigns</span></div>
+          </div>
+
+          <!-- Photo 2 (square) -->
+          <figure class="ed-img ed-2" data-lightbox data-title="SEO Work" data-note="Short description. Edit me." data-ph="images/seo-1.jpg">
+            <div class="ph" data-ph="images/seo-1.jpg"><img src="images/seo-1.jpg" alt="SEO work" onerror="this.remove()"></div>
+            <span class="ed-label">SEO</span>
+          </figure>
+
+          <!-- Text 2 -->
+          <div class="ed-text ed-t2">
+            <span class="ed-num">02</span>
+            <h4>SEO &amp; Content</h4>
+            <p>Search-friendly structure, on-page copy, backlinks and audits that help a website get found.</p>
+            <div class="tag-row"><span class="tag-chip">Keywords</span><span class="tag-chip">On-page</span><span class="tag-chip">Backlinks</span></div>
+          </div>
+
+          <!-- Text 3 -->
+          <div class="ed-text ed-t3">
+            <span class="ed-num">03</span>
+            <h4>PR &amp; Social Media</h4>
+            <p>Press-style storytelling, community-building and short-form video, shaped for each platform — from Reels and Stories to launch announcements.</p>
+            <div class="tag-row"><span class="tag-chip">Press &amp; PR</span><span class="tag-chip">Reels</span><span class="tag-chip">Stories</span><span class="tag-chip">Analytics</span></div>
+          </div>
+
+          <!-- Photo 3 (wide) -->
+          <figure class="ed-img ed-3" data-lightbox data-title="Social Media Content" data-note="Short description. Edit me." data-ph="images/social-1.jpg">
+            <div class="ph" data-ph="images/social-1.jpg"><img src="images/social-1.jpg" alt="Social media content" onerror="this.remove()"></div>
+            <span class="ed-label">Social Media</span>
+          </figure>
+        </div>
+
+        <!-- ✏️ 4B · PHOTOGRAPHY — a pile of photobooth strips
+             Hover over the pile (phone: tap it) and the strips spread out. Click a frame = big.
+             Your photos are listed in the script (section "4b", the list called PHOTOBOOTH). -->
+        <div class="booth-head">
+          <span class="ed-num">04</span>
+          <div>
+            <h4>Photography</h4>
+            <p>Analog and digital frames: people, places, moods. Hover over the pile to spread the strips, click a frame to see it big.</p>
+          </div>
+        </div>
+        <div class="booth" id="booth" aria-label="Photography photobooth strips"><div class="booth-stack" id="boothTrack"></div></div>
+        <p class="pola-hint" id="boothHint">Hover to spread the strips · click a photo to enlarge</p>
+      </div>
+
+      <!-- ===============================================================
+           4C · UX / UI
+           Behance button + 2 big clickable cards.
+           ✏️ EDIT each card: href="..." (the link it opens), <img src="images/ux-1.jpg"> (the cover
+              picture), the title, the description and the chips.
+           ✏️ To add a 3rd card: copy one <a class="ux-card"> block. (Cards sit 2 per row.)
+           =============================================================== -->
+      <div class="work-project-entry reveal-on-scroll" id="w-uiux">
+        <div class="work-entry-header"><span class="work-entry-num">03 / ARCHIVE</span><span class="work-entry-genre">Interface Architecture · Figma</span></div>
+        <h3 class="work-entry-title">UX / UI <span class="cursive-accent">Design</span></h3>
+        <p class="work-entry-summary">Designing user-first mobile app experiences and digital interfaces. Focused on intuitive navigation architecture, accessibility, clean typographic hierarchy, and interactive Figma prototypes.</p>
+
+        <div class="tag-row">
+          <span class="tag-chip">User Research</span><span class="tag-chip">Wireframes</span><span class="tag-chip">Prototyping</span>
+          <span class="tag-chip">Design Systems</span><span class="tag-chip">Usability Testing</span><span class="tag-chip">Accessibility</span>
+        </div>
+
+        <div class="work-cta-row" style="margin-bottom:34px">
+          <!-- ✏️ LINK: your Behance -->
+          <a href="https://www.behance.net/linaorundas" target="_blank" rel="noopener" class="btn-action-pill">View all on Behance ↗</a>
+        </div>
+
+        <div class="ux-grid">
+          <!-- Card 1 · ✏️ link + cover image + texts -->
+          <a href="https://www.behance.net/linaorundas" target="_blank" rel="noopener" class="ux-card">
+            <div class="ph" data-ph="images/ux-1.jpg → cover of link 1"><img src="images/ux-1.jpg" alt="UX case study 1 cover" onerror="this.remove()"></div>
+            <div class="ux-body">
+              <span class="ux-eyebrow">Case Study 01</span>
+              <h4>Project Name One</h4>
+              <p>Two lines about the problem, who it was for, and what you designed. Edit me.</p>
+              <div class="tag-row"><span class="tag-chip">Mobile App</span><span class="tag-chip">Figma</span></div>
+              <span class="ux-go">Open case study ↗</span>
+            </div>
+          </a>
+
+          <!-- Card 2 -->
+          <a href="https://www.behance.net/linaorundas" target="_blank" rel="noopener" class="ux-card">
+            <div class="ph" data-ph="images/ux-2.jpg → cover of link 2"><img src="images/ux-2.jpg" alt="UX case study 2 cover" onerror="this.remove()"></div>
+            <div class="ux-body">
+              <span class="ux-eyebrow">Case Study 02</span>
+              <h4>Project Name Two</h4>
+              <p>Two lines about the problem, who it was for, and what you designed. Edit me.</p>
+              <div class="tag-row"><span class="tag-chip">Web</span><span class="tag-chip">Prototype</span></div>
+              <span class="ux-go">Open case study ↗</span>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     5. CONTACT
+     ✏️ EDIT: the intro statement, the email (also in SCRIPT section 6!), chips,
+              the LinkedIn link and the "Also find me" row.
+     ===================================================================== -->
+<section class="contact-section-art" id="contact">
+  <div class="wrap">
+
+    <div class="reveal-on-scroll">
+      <div style="text-align:center;margin-bottom:12px;"><span class="sec-tag-small">04. Index &amp; Colophon</span></div>
+      <h2 class="contact-giant-title">Let's <span class="cursive-glow">Connect</span></h2>
+      <p class="contact-statement-center">Currently accepting creative direction roles, freelance editorial commissions, DJ bookings, and collaborative art projects. Based in Sweden Time (CET), available globally &amp; remotely worldwide.</p>
+    </div>
+
+    <!-- ✏️ ONE creative contact section: photo on the left, words on the right. No boxes. -->
+    <div class="connect-layout reveal-on-scroll">
+
+      <!-- LEFT · your photo in an arch frame with a spinning "available" badge
+           ✏️ PHOTO: save a vertical picture of you as  images/contact.jpg  (3:4 works best) -->
+      <div class="connect-photo">
+        <div class="connect-aura"></div>
+        <div class="connect-arch ph" data-ph="images/contact.jpg (your photo, vertical 3:4)">
+          <img src="images/contact.jpg" alt="Lina Orundas" onerror="this.remove()">
+        </div>
+        <svg class="connect-badge" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="58" fill="#fff" stroke="rgba(17,17,17,.12)"/>
+          <defs><path id="badgePath" d="M60,60 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs>
+          <!-- ✏️ the words that spin around the badge -->
+          <text><textPath href="#badgePath" textLength="262" lengthAdjust="spacing">AVAILABLE FOR WORK ✦ LET'S TALK ✦ </textPath></text>
+          <text x="60" y="68" text-anchor="middle" font-size="22" fill="#D4669A">✦</text>
+        </svg>
+      </div>
+
+      <!-- RIGHT · email, topics, links -->
+      <div class="connect-body">
+        <div class="connect-clock"><span class="nav-dot"></span> Sweden · <b id="liveClock">16:45:00 CET</b></div>
+
+        <p class="connect-label">Write to me</p>
+        <!-- ✏️ EMAIL shown on the site (click = copies it). Also change MY_EMAIL in script section 6 -->
+        <button class="connect-email" onclick="copyEmailToClipboard()" title="Click to copy">linaorundas70@gmail.com <span>copy</span></button>
+
+        <p class="connect-label">It's about</p>
+        <!-- ✏️ topics. The text inside onclick('...') becomes the email subject. -->
+        <div class="connect-topics" id="inquiryCluster">
+          <!-- ✏️ HOW TO ADD A BUTTON: copy ONE full line below, paste it under the last one, then change
+               (1) the text between > and </button>  = what people see
+               (2) the text inside the quotes after "this,"  = the email subject line.
+               Keep the total a multiple of 3 (9, 12, 15...) so the grid stays perfectly symmetrical. -->
+          <button class="inquiry-chip selected" onclick="selectInquiry(this, 'Creative Direction &amp; Brand Strategy')">Creative Direction</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Graphic Design &amp; Branding')">Graphic &amp; Branding</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Editorial Writing &amp; Portal Press')">Editorial Writing</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Marketing, SEO &amp; PR')">Marketing &amp; SEO</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Photography')">Photography</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'UX / UI Design')">UX / UI</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'DJ &amp; Sound Design')">DJ &amp; Sound Design</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Creative Project')">Creative Project</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Collaboration')">Collaboration</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Part-Time Role')">Part-Time</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Full-Time Role')">Full-Time</button>
+          <button class="inquiry-chip" onclick="selectInquiry(this, 'Freelance Commission')">Freelance</button>
+        </div>
+
+        <!-- ✏️ EMAIL again inside href="mailto:..." -->
+        <a id="emailInquiryBtn" href="mailto:linaorundas70@gmail.com?subject=Creative%20Inquiry%20%E2%80%94%20Creative%20Direction%20%26%20Brand%20Strategy" class="btn-minimal-black connect-send">Send an email →</a>
+
+        <div class="connect-links">
+          <!-- ✏️ LINK: LinkedIn -->
+          <a href="https://www.linkedin.com/in/lina-orundas-022067332/" target="_blank" rel="noopener" class="connect-linkedin">LinkedIn <span>↗</span></a>
+          <!-- ✏️ LINKS: small "Also find me" row (add / delete any <a>) -->
+          <div class="mini-links">
+            <span>Also find me</span>
+            <a href="https://www.behance.net/linaorundas" target="_blank" rel="noopener">Behance ↗</a>
+            <a href="https://instagram.com/luakovsky" target="_blank" rel="noopener">Portal Press ↗</a>
+            <a href="https://instagram.com/luakovsky" target="_blank" rel="noopener">@luakovsky ↗</a>
+          </div>
+        </div>
+        <p class="connect-note">✦ Quick response within 24–48 hours · Available globally</p>
+      </div>
+    </div>
+
+    <!-- signature + 3 small notes (✏️ EDIT texts; delete the whole "colophon-triad-table" div if you want it even simpler) -->
+    <div class="colophon-signature-centerpiece reveal-on-scroll">
+      <span class="calligraphic-signoff">Lina Orundas</span>
+      <p style="font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--fg-subtle);font-weight:600;">Creative Direction &amp; Editorial Archive · Sweden Time · 2026</p>
+      <div class="colophon-triad-table">
+        <div class="colophon-triad-col"><span class="col-title">Typography</span><span class="col-body">Bodoni Moda &amp; Cormorant Garamond paired with Plus Jakarta Sans and Pinyon Script flourishes.</span></div>
+        <div class="colophon-triad-col"><span class="col-title">Practice</span><span class="col-body">Tactile editorial systems, UX/UI digital architecture, magazine blog curation, and brand strategy.</span></div>
+        <div class="colophon-triad-col"><span class="col-title">Availability</span><span class="col-body">Currently Sweden Time (CET). Open for global remote roles, freelance direction, and worldwide travel.</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<!-- FOOTER  ✏️ EDIT: links -->
+<footer>
+  <div class="wrap footer-row">
+    <span>© 2026 Lina Orundas. All rights reserved.</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <a href="#home">Back to Top ↑</a>
+      <a href="https://www.linkedin.com/in/lina-orundas-022067332/" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Big-picture viewer (used by polaroids + marketing photos). Nothing to edit. -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+  <figure class="lb-frame">
+    <div class="lb-media" id="lbMedia"></div>
+    <figcaption><div class="lb-title" id="lbTitle"></div><div class="lb-note" id="lbNote"></div></figcaption>
+  </figure>
+</div>
+
+<div class="toast-pill" id="copyToast">Email Copied to Clipboard ✓</div>
+
+<script>
+/* =====================================================================
+   0. LOADING SCREEN  (small square board → searching → your name → outro)
+   ✏️ EDIT the name here: first row shows in PINK letters, second row in BLACK.
+   ===================================================================== */
+(function () {
+  const NAME_ROWS = ['LINA', 'ORUNDAS'];      // ✏️ your name, one word per row
+
+  /* TIMELINE in milliseconds (1000 = 1 second) ✏️ EDIT to make it faster / slower */
+  const SEARCH_UNTIL = 2000;   // tiles flicker pink/grey with NO letters until here
+  const TIDY_AT      = 2100;   // empty tiles slide away, name rows center themselves
+  const LETTERS_AT   = 2800;   // letters start appearing one by one
+  const LETTER_STEP  = 100;    // delay between each letter
+  const OUTRO_AT     = 4300;   // square fades + aura expands
+  const DONE_AT      = 4700;   // loading screen disappears (site is revealed)
+
+  const loader = document.getElementById('loader');
+  const card   = document.getElementById('ldCard');
+  const SIZE = 7;                             // 7 x 7 board
+  const nameRowIdx = [2, 4];                  // which board rows will hold the name
+  const rows = [], all = [];
+
+  for (let r = 0; r < SIZE; r++) {
+    const row = document.createElement('div'); row.className = 'ld-row';
+    const tiles = [];
+    for (let c = 0; c < SIZE; c++) {
+      const t = document.createElement('div'); t.className = 'ld-tile';
+      row.appendChild(t); tiles.push(t); all.push(t);
+    }
+    card.appendChild(row); rows.push({ row, tiles });
+  }
+
+  const flip = (t, fn) => { t.classList.remove('flip'); void t.offsetWidth; t.classList.add('flip'); if (fn) setTimeout(fn, 280); };
+  const states = ['s1', 's2', 's3'];
+  const clearStates = () => all.forEach(t => t.classList.remove('s1', 's2', 's3'));
+
+  // PHASE 1: searching (no letters)
+  const search = setInterval(() => {
+    clearStates();
+    for (let i = 0; i < 6; i++) {
+      const t = all[Math.floor(Math.random() * all.length)];
+      flip(t); t.classList.add(states[Math.floor(Math.random() * 3)]);
+    }
+  }, 160);
+  setTimeout(() => { clearInterval(search); clearStates(); }, SEARCH_UNTIL);
+
+  // PHASE 2: tidy up — keep only the tiles the name needs
+  setTimeout(() => {
+    rows.forEach((o, r) => {
+      const k = nameRowIdx.indexOf(r);
+      if (k === -1) { o.row.classList.add('gone'); return; }
+      o.tiles.forEach((t, c) => { if (c >= NAME_ROWS[k].length) t.classList.add('gone'); });
+    });
+  }, TIDY_AT);
+
+  // PHASE 3: letters appear (row 1 pink, row 2 black)
+  let n = 0;
+  NAME_ROWS.forEach((word, k) => {
+    [...word].forEach((ch, c) => {
+      const t = rows[nameRowIdx[k]].tiles[c];
+      setTimeout(() => flip(t, () => { t.textContent = ch; t.classList.add(k === 0 ? 'show-pink' : 'show-ink'); }), LETTERS_AT + (n++) * LETTER_STEP);
+    });
+  });
+
+  // PHASE 4: outro, then reveal the site
+  let finished = false;
+  const outro = () => loader.classList.add('outro');
+  const finish = () => {
+    if (finished) return; finished = true;
+    outro(); loader.classList.add('done');
+    document.body.style.overflow = '';
+    document.body.classList.add('loaded');   // starts the hero text animation
+  };
+  document.body.style.overflow = 'hidden';
+  setTimeout(outro, OUTRO_AT);
+  setTimeout(finish, DONE_AT);
+  loader.addEventListener('click', finish);   // click to skip
+})();
+
+/* =====================================================================
+   1. LIVE CLOCK (Sweden time)
+   ===================================================================== */
+function updateClock() {
+  const o = { timeZone: 'Europe/Stockholm', hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const el = document.getElementById('liveClock');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-GB', o) + ' CET';
+}
+setInterval(updateClock, 1000); updateClock();
+
+/* =====================================================================
+   2. HEADER BLUR + SCROLL-IN ANIMATIONS
+   ===================================================================== */
+window.addEventListener('scroll', () => {
+  document.getElementById('siteHeader').classList.toggle('scrolled', window.scrollY > 40);
+});
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('revealed'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal-on-scroll').forEach(el => revealObserver.observe(el));
+
+/* =====================================================================
+   3. POLAROIDS — glide left/right when you move the mouse over them
+   ✏️ EDIT: change 0.06 (speed: smaller = slower/smoother, bigger = faster)
+   ===================================================================== */
+(function () {
+  const stage = document.getElementById('polaStage');
+  const hint = document.getElementById('polaHint');
+  if (!stage) return;
+  const hasMouse = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (!hasMouse) { if (hint) hint.textContent = 'Swipe to browse · tap to enlarge'; return; }
+  let target = 0, raf = null;
+  const SPEED = 0.06;
+  function step() {
+    const d = target - stage.scrollLeft;
+    if (Math.abs(d) < 0.5) { raf = null; return; }
+    stage.scrollLeft += d * SPEED;
+    raf = requestAnimationFrame(step);
+  }
+  stage.addEventListener('mousemove', e => {
+    const r = stage.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;                       // 0 (left) → 1 (right)
+    const max = stage.scrollWidth - stage.clientWidth;
+    target = Math.min(1, Math.max(0, (x - 0.1) / 0.8)) * max;       // edges 10% = full left / right
+    if (!raf) raf = requestAnimationFrame(step);
+  });
+  stage.addEventListener('mouseleave', () => { target = stage.scrollLeft; });
+})();
+
+/* =====================================================================
+   4. BIG-PICTURE VIEWER (click any element with data-lightbox)
+   The title + note come from data-title="..." and data-note="..." in the HTML.
+   ===================================================================== */
+(function () {
+  const box = document.getElementById('lightbox');
+  const media = document.getElementById('lbMedia');
+  const title = document.getElementById('lbTitle');
+  const note = document.getElementById('lbNote');
+
+  function open(el) {
+    const img = el.querySelector('img');
+    media.innerHTML = '';
+    if (img && img.complete && img.naturalWidth) {
+      const big = document.createElement('img'); big.src = img.currentSrc || img.src; big.alt = img.alt || '';
+      media.appendChild(big);
+    } else {
+      const ph = document.createElement('div'); ph.className = 'lb-ph'; ph.textContent = el.dataset.ph || 'Add your image';
+      media.appendChild(ph);
+    }
+    title.textContent = el.dataset.title || '';
+    note.textContent = el.dataset.note || '';
+    box.classList.add('open'); box.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function close() {
+    box.classList.remove('open'); box.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', e => {
+    const el = e.target.closest('[data-lightbox]');
+    if (el) { open(el); return; }
+    if (box.classList.contains('open') && (e.target === box || e.target.id === 'lbClose')) close();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+})();
+
+/* =====================================================================
+   4b. PHOTOGRAPHY — pile of photobooth strips (hover / tap to spread)
+   ✏️ EDIT THE LIST BELOW. One line = one photo.
+      src   = the picture file (put it in the images/ folder)
+      title = the big title when someone clicks it
+      note  = the small text under the title
+   Every 3 photos make one strip. Add or delete lines freely.
+   ===================================================================== */
+(function () {
+  const PHOTOBOOTH = [
+    { src: 'images/photo-1.jpg',  title: 'Frame 01', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-2.jpg',  title: 'Frame 02', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-3.jpg',  title: 'Frame 03', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-4.jpg',  title: 'Frame 04', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-5.jpg',  title: 'Frame 05', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-6.jpg',  title: 'Frame 06', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-7.jpg',  title: 'Frame 07', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-8.jpg',  title: 'Frame 08', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-9.jpg',  title: 'Frame 09', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-10.jpg', title: 'Frame 10', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-11.jpg', title: 'Frame 11', note: 'Where / when / mood. Edit me.' },
+    { src: 'images/photo-12.jpg', title: 'Frame 12', note: 'Where / when / mood. Edit me.' }
+  ];
+  const PER_STRIP = 3;          // photos per strip
+
+  const booth = document.getElementById('booth');
+  const stack = document.getElementById('boothTrack');
+  const hint  = document.getElementById('boothHint');
+  if (!booth || !stack) return;
+
+  const n = Math.ceil(PHOTOBOOTH.length / PER_STRIP);
+  booth.style.setProperty('--mid', (n - 1) / 2);
+
+  for (let i = 0, k = 0; i < PHOTOBOOTH.length; i += PER_STRIP, k++) {
+    const strip = document.createElement('div');
+    strip.className = 'strip';
+    strip.style.setProperty('--i', k);
+    PHOTOBOOTH.slice(i, i + PER_STRIP).forEach(p => {
+      const f = document.createElement('div');
+      f.className = 'frame ph';
+      f.setAttribute('data-lightbox', '');
+      f.dataset.title = p.title; f.dataset.note = p.note; f.setAttribute('data-ph', p.src);
+      const img = document.createElement('img');
+      img.src = p.src; img.alt = p.title; img.onerror = () => img.remove();
+      f.appendChild(img); strip.appendChild(f);
+    });
+    stack.appendChild(strip);
+  }
+
+  // how far apart the strips go when spread (fits the screen width)
+  function layout() {
+    const sw = stack.firstElementChild.offsetWidth;
+    const spacing = n > 1 ? Math.min(200, (booth.clientWidth - sw - 20) / (n - 1)) : 0;
+    booth.style.setProperty('--spacing', Math.max(40, spacing) + 'px');
+  }
+  layout();
+  window.addEventListener('resize', layout);
+
+  const hasMouse = window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (hasMouse) {
+    booth.addEventListener('mouseenter', () => booth.classList.add('fanned'));
+    booth.addEventListener('mouseleave', () => booth.classList.remove('fanned'));
+  } else if (hint) {
+    hint.textContent = 'Tap to spread the strips · tap a photo to enlarge';
+  }
+  // first click/tap on the pile spreads it (instead of opening a photo)
+  booth.addEventListener('click', e => {
+    if (!booth.classList.contains('fanned')) {
+      e.stopPropagation(); e.preventDefault(); booth.classList.add('fanned'); return;
+    }
+    if (!hasMouse && !e.target.closest('.frame')) booth.classList.remove('fanned');
+  }, true);
+})();
+
+/* =====================================================================
+   5. TURNTABLE
+   ✏️ EDIT: vinyl color names in the list below
+   ===================================================================== */
+let isSpinning = true;
+const vinylDisc = document.getElementById('vinylDisc'), tonearmArm = document.getElementById('tonearmArm'),
+  powerLed = document.getElementById('powerLed'), motorStatusText = document.getElementById('motorStatusText'),
+  spinBtnText = document.getElementById('spinBtnText'), spinBtnIcon = document.getElementById('spinBtnIcon'),
+  spinToggleBtn = document.getElementById('spinToggleBtn'), vinylEditionName = document.getElementById('vinylEditionName'),
+  vinylEditionPill = document.getElementById('vinylEditionPill');
+const vinylPressings = [
+  { id: 'pink',  name: 'Bubblegum Blush',     color: '#D4669A' },
+  { id: 'white', name: 'Pearl Atelier Glaze', color: '#888888' },
+  { id: 'black', name: 'Obsidian 180g Ink',   color: '#111111' },
+  { id: 'lilac', name: 'Electric Acid Lilac', color: '#C36BE8' }
+];
+let currentSkinIndex = 0;
+
+function toggleTurntableSpin() {
+  isSpinning = !isSpinning;
+  if (isSpinning) {
+    vinylDisc.classList.remove('paused'); vinylDisc.classList.add('spinning'); tonearmArm.classList.remove('parked');
+    powerLed.classList.remove('off'); spinToggleBtn.classList.add('active-rose');
+    spinBtnText.textContent = 'Spinning'; spinBtnIcon.textContent = '❚❚'; motorStatusText.textContent = 'Motor Active · Touch Vinyl to Swap';
+  } else {
+    vinylDisc.classList.remove('spinning'); vinylDisc.classList.add('paused'); tonearmArm.classList.add('parked');
+    powerLed.classList.add('off'); spinToggleBtn.classList.remove('active-rose');
+    spinBtnText.textContent = 'Paused'; spinBtnIcon.textContent = '▶'; motorStatusText.textContent = 'Standstill · Easy Reading Mode';
+  }
+}
+function swapVinylSkin(skin) {
+  const i = vinylPressings.findIndex(p => p.id === skin);
+  if (i !== -1) currentSkinIndex = i;
+  applyVinylPressing(currentSkinIndex);
+}
+function cycleNextVinylSkin() {
+  currentSkinIndex = (currentSkinIndex + 1) % vinylPressings.length;
+  applyVinylPressing(currentSkinIndex);
+}
+function applyVinylPressing(idx) {
+  const p = vinylPressings[idx];
+  const wasPaused = vinylDisc.classList.contains('paused');
+  vinylDisc.className = 'vinyl-disc disc-skin-' + p.id + (wasPaused ? ' paused' : ' spinning') + ' spin-pulsing';
+  setTimeout(() => vinylDisc.classList.remove('spin-pulsing'), 450);
+  if (vinylEditionName) vinylEditionName.textContent = p.name;
+  const dot = vinylEditionPill && vinylEditionPill.querySelector('.dot');
+  if (dot) { dot.style.background = p.color; dot.style.boxShadow = '0 0 10px ' + p.color; }
+  document.querySelectorAll('.vinyl-swatch-card').forEach((c, i) => c.classList.toggle('active', i === idx));
+  playBeep();
+}
+function handleVinylDiscClick(e) {
+  if (e.target.closest('.record-track-tag')) return;   // let the section links work
+  cycleNextVinylSkin();
+}
+
+/* soft chime sound on clicks */
+function playBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+    gain.gain.setValueAtTime(0.04, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + 0.35);
+  } catch (e) {}
+}
+
+/* =====================================================================
+   6. CONTACT — email subject + copy button
+   ✏️ EDIT: your email (it appears twice in this section — change both)
+   ===================================================================== */
+const MY_EMAIL = 'linaorundas70@gmail.com';
+
+function selectInquiry(btn, topic) {
+  document.querySelectorAll('.inquiry-chip').forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+  const emailBtn = document.getElementById('emailInquiryBtn');
+  if (emailBtn) {
+    const clean = topic.replace(/&amp;/g, '&');
+    emailBtn.href = 'mailto:' + MY_EMAIL + '?subject=' + encodeURIComponent('Creative Inquiry — ' + clean);
+  }
+  playBeep();
+}
+function copyEmailToClipboard() {
+  navigator.clipboard.writeText(MY_EMAIL).then(() => {
+    const t = document.getElementById('copyToast');
+    t.classList.add('show'); playBeep();
+    setTimeout(() => t.classList.remove('show'), 2500);
+  });
+}
+</script>
+</body>
+</html>
